@@ -15,5 +15,5 @@
     "noUnusedParameters": true,
     "lib": ["es2017"]
   },
-  "include": ["src"]
+  "include": ["src", "node_modules/@types"]
 }
