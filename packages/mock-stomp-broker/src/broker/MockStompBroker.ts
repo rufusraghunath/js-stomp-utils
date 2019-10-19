@@ -72,8 +72,8 @@ class MockStompBroker {
     this.httpServer = http.createServer();
     this.stompServer = new StompServer({
       server: this.httpServer,
-      protocol: "ws",
-      path: "/websocket"
+      protocol: "ws", // TODO: make configurable
+      path: "/websocket" // TODO: make configurabe
     });
 
     this.registerMiddlewares();
@@ -118,8 +118,8 @@ class MockStompBroker {
     const body = JSON.stringify(payload);
     const mockMessageId = uuid();
     this.stompServer.send(
-      `/topics/${topic}`,
-      { "content-type": "application/json;charset=UTF-8", mockMessageId },
+      `/topics/${topic}`, // TODO: make configurable
+      { "content-type": "application/json;charset=UTF-8", mockMessageId }, // TODO: make configurable
       body
     );
 
