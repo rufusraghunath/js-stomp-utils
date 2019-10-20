@@ -166,16 +166,13 @@ describe("MockStompBroker", () => {
       });
     });
 
-    describe("sendMessageWithPayloadToTopic", () => {
+    describe("scheduleMessage", () => {
       it("returns a messageId for the scheduled message", async () => {
         const [sessionId] = await broker.newSessionsConnected();
 
         await broker.subscribed(sessionId);
 
-        const messageId = broker.sendMessageWithPayloadToTopic(
-          topic,
-          messagePayload
-        );
+        const messageId = broker.scheduleMessage(topic, messagePayload);
 
         expect(messageId).toBeDefined();
       });
@@ -198,10 +195,7 @@ describe("MockStompBroker", () => {
 
         await broker.subscribed(sessionId);
 
-        const messageId = broker.sendMessageWithPayloadToTopic(
-          topic,
-          messagePayload
-        );
+        const messageId = broker.scheduleMessage(topic, messagePayload);
 
         await broker.messageSent(messageId);
       });
@@ -211,10 +205,7 @@ describe("MockStompBroker", () => {
 
         await broker.subscribed(sessionId);
 
-        const messageId = broker.sendMessageWithPayloadToTopic(
-          topic,
-          messagePayload
-        );
+        const messageId = broker.scheduleMessage(topic, messagePayload);
 
         expect(onMessage).not.toHaveBeenCalled();
 

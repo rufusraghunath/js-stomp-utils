@@ -17,7 +17,7 @@ declare namespace MockStompBroker {
     getPort(): number;
     newSessionsConnected(): Promise<string[]>;
     subscribed(sessionId: string): Promise<void>;
-    sendMessageWithPayloadToTopic(topic: string, payload: any): string;
+    scheduleMessage(topic: string, payload: any): string;
     messageSent(messageId: string): Promise<void>;
     disconnected(sessionId: string): Promise<void>;
     kill(): void;

@@ -81,7 +81,6 @@ class MockStompBroker {
     this.httpServer.listen(this.port);
   }
 
-  // TODO: rename to newSession - this can never return more than one!
   public async newSessionsConnected(): Promise<string[]> {
     await waitUntil(this.thereAreNewSessions, "No new sessions established");
 
@@ -102,8 +101,7 @@ class MockStompBroker {
     }, `Session ${sessionId} never subscribed to a topic`);
   }
 
-  // TODO: rename to scheduleMessage
-  public sendMessageWithPayloadToTopic(topic: string, payload: {}): string {
+  public scheduleMessage(topic: string, payload: {}): string {
     const body = JSON.stringify(payload);
     const mockMessageId = uuid();
     this.stompServer.send(
