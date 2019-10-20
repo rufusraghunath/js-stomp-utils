@@ -14,12 +14,22 @@ global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 
 describe("MockStompBroker", () => {
+  const topic = "my-topic";
+  const onMessage = jest.fn();
+  const expectRejection = async (p: Promise<any>, expected: string) => {
+    try {
+      await p;
+    } catch (e) {
+      expect(e).toMatch(expected);
+    }
+  };
   let broker: MockStompBroker;
   let port: number;
 
   beforeEach(() => {
     broker = new MockStompBroker();
     port = broker.getPort();
+    onMessage.mockReset();
   });
 
   afterEach(() => {
@@ -28,7 +38,7 @@ describe("MockStompBroker", () => {
 
   describe("startup", () => {
     it("can take a specific port", () => {
-      broker = new MockStompBroker(3000);
+      broker = new MockStompBroker({ port: 3000 });
 
       expect(broker.getPort()).toBe(3000);
     });
@@ -46,35 +56,56 @@ describe("MockStompBroker", () => {
       expect(port).toBeGreaterThan(8000);
     });
 
-    xit("can be configured to use ws:// or wss://", () => {
-      //
+    it("can be configured to take a custom websocket endpoint", async () => {
+      const endpoint = "/my-endpoint";
+      const customPathBroker = new MockStompBroker({ endpoint });
+      const nonMatchingClient = getStompClient({
+        port: customPathBroker.getPort(),
+        topic,
+        onMessage,
+        endpoint: "/some-other-endpoint"
+      });
+
+      expectRejection(
+        customPathBroker.newSessionsConnected(),
+        "No new sessions established"
+      );
+
+      const matchingClient = getStompClient({
+        port: customPathBroker.getPort(),
+        topic,
+        onMessage,
+        endpoint
+      });
+
+      await customPathBroker.newSessionsConnected();
+
+      nonMatchingClient.deactivate();
+      matchingClient.deactivate();
+      customPathBroker.kill();
     });
 
-    xit("can be configured to take a custom websocket endpoint", () => {
-      //
-    });
+    it("falls back to using /websocket as the base endpoint", async () => {
+      const client = getStompClient({
+        port,
+        topic,
+        onMessage,
+        endpoint: "/websocket"
+      });
 
-    xit("falls back to using /websocket as the base endpoint", () => {
-      //
+      await broker.newSessionsConnected();
+
+      client.deactivate();
+      broker.kill();
     });
   });
 
   describe("interacting", () => {
-    const topic = "my-topic";
     const messagePayload = { hello: "world" };
-    const onMessage = jest.fn();
-    const expectRejection = async (p: Promise<any>, expected: string) => {
-      try {
-        await p;
-      } catch (e) {
-        expect(e).toMatch(expected);
-      }
-    };
     let client: Client;
 
     beforeEach(() => {
       client = getStompClient({ topic, port, onMessage });
-      onMessage.mockReset();
     });
 
     afterEach(() => {
@@ -238,14 +269,14 @@ describe("MockStompBroker", () => {
         // TODO: make this work
 
         try {
-          new MockStompBroker(port);
+          new MockStompBroker({ port });
         } catch (e) {
           expect(e).toBe("asd");
         }
 
         broker.kill();
 
-        new MockStompBroker(port);
+        new MockStompBroker({ port });
       });
     });
   });

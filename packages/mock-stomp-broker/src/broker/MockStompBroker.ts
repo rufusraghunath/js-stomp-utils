@@ -35,6 +35,12 @@ interface Sessions {
   [sessionId: string]: Session;
 }
 
+interface OptionalConfig {
+  port?: number;
+  portRange?: [number, number];
+  endpoint?: string;
+}
+
 class MockStompBroker {
   private static PORTS_IN_USE: number[] = [];
   private static BASE_SESSION = {
@@ -65,7 +71,7 @@ class MockStompBroker {
   private queriedSessionIds: string[] = [];
   private sessions: Sessions = {};
 
-  constructor(port?: number) {
+  constructor({ port, endpoint = "/websocket" }: OptionalConfig = {}) {
     this.thereAreNewSessions = this.thereAreNewSessions.bind(this);
     this.registerMiddlewares = this.registerMiddlewares.bind(this);
     this.setMiddleware = this.setMiddleware.bind(this);
@@ -74,8 +80,7 @@ class MockStompBroker {
     this.httpServer = http.createServer();
     this.stompServer = new StompServer({
       server: this.httpServer,
-      protocol: "ws", // TODO: make configurable
-      path: "/websocket" // TODO: make configurabe
+      path: endpoint
     });
 
     this.registerMiddlewares();

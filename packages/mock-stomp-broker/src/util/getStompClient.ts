@@ -4,15 +4,17 @@ interface ClientArgs {
   port: number;
   topic?: string;
   onMessage?: (message: Message) => void;
+  endpoint?: string;
 }
 
 const getStompClient = ({
   port,
   topic,
-  onMessage = jest.fn()
+  onMessage = jest.fn(),
+  endpoint = "/websocket"
 }: ClientArgs): Client => {
   const client = new Client({
-    brokerURL: `ws://localhost:${port}/websocket`
+    brokerURL: `ws://localhost:${port}${endpoint}`
   });
 
   if (topic) {
