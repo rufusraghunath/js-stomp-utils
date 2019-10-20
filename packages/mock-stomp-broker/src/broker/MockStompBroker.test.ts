@@ -43,12 +43,12 @@ describe("MockStompBroker", () => {
       expect(broker.getPort()).toBe(3000);
     });
 
-    xit("fails when port specified is already in use by another MockStompBroker instance", () => {
-      // TODO
-    });
+    it("can pick a random port from a specific range", () => {
+      broker = new MockStompBroker({ portRange: [5000, 5010] });
+      port = broker.getPort();
 
-    xit("can pick a random port from a specific range", () => {
-      // TODO
+      expect(port).toBeLessThan(5010);
+      expect(port).toBeGreaterThan(5000);
     });
 
     it("falls back to a random port between 8000 and 9000", () => {

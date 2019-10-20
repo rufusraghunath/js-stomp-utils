@@ -54,12 +54,10 @@ class MockStompBroker {
     return Math.floor(Math.random() * (max - min)) + min;
   }
 
-  private static getPort(): number {
-    const min = 8000; // inclusive TODO: make configurable
-    const max = 9001; // exclusive TODO: make configurable
-    const port = this.getRandomInt(min, max);
-
-    // TODO: add try/catch on EADDRINUSE
+  private static getPort(portRange: [number, number] = [8000, 9001]): number {
+    const minInclusive = portRange[0];
+    const maxExclusive = portRange[1];
+    const port = this.getRandomInt(minInclusive, maxExclusive);
 
     return this.PORTS_IN_USE.includes(port) ? this.getPort() : port;
   }
@@ -71,13 +69,18 @@ class MockStompBroker {
   private queriedSessionIds: string[] = [];
   private sessions: Sessions = {};
 
-  constructor({ port, endpoint = "/websocket" }: OptionalConfig = {}) {
+  constructor({
+    port,
+    portRange,
+    endpoint = "/websocket"
+  }: OptionalConfig = {}) {
     this.thereAreNewSessions = this.thereAreNewSessions.bind(this);
     this.registerMiddlewares = this.registerMiddlewares.bind(this);
     this.setMiddleware = this.setMiddleware.bind(this);
 
-    this.port = port || MockStompBroker.getPort();
+    this.port = port || MockStompBroker.getPort(portRange);
     this.httpServer = http.createServer();
+
     this.stompServer = new StompServer({
       server: this.httpServer,
       path: endpoint
