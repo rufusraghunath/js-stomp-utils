@@ -43,13 +43,14 @@
   },
   "scripts": {
     "prepublish": "npm run build",
-    "build": "npm run lint && npm run prettier && jest --config jestconfig.json && webpack --mode=production",
+    "build": "npm run lint && npm run prettier && jest --config jestconfig.json && webpack --mode=production && npm run copy-types",
     "test": "jest --config jestconfig.json --watch",
     "prettier:base": "prettier --parser typescript",
     "prettier": "npm run prettier:base -- --list-different \"src/**/*.ts\"",
     "prettier:fix": "npm run prettier:base -- --loglevel warn --write \"src/**/*.ts\"",
     "lint": "npx eslint 'src/**/*.ts' -c ./eslintconfig.json",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "copy-types": "cp src/broker/index.d.ts dist"
   },
   "husky": {
     "hooks": {
