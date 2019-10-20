@@ -101,14 +101,16 @@ class MockStompBroker {
     }, `Session ${sessionId} never subscribed to a topic`);
   }
 
-  public scheduleMessage(topic: string, payload: {}): string {
+  public scheduleMessage(
+    topic: string,
+    payload: any,
+    headers: {} = {
+      "content-type": "application/json;charset=UTF-8"
+    }
+  ): string {
     const body = JSON.stringify(payload);
     const mockMessageId = uuid();
-    this.stompServer.send(
-      `/${topic}`,
-      { "content-type": "application/json;charset=UTF-8", mockMessageId }, // TODO: make configurable
-      body
-    );
+    this.stompServer.send(`/${topic}`, { ...headers, mockMessageId }, body);
 
     return mockMessageId;
   }

@@ -15,7 +15,6 @@ global.TextDecoder = TextDecoder;
 
 describe("MockStompBroker", () => {
   const topic = "my-topic";
-  const onMessage = jest.fn();
   const expectRejection = async (p: Promise<any>, expected: string) => {
     try {
       await p;
@@ -29,7 +28,6 @@ describe("MockStompBroker", () => {
   beforeEach(() => {
     broker = new MockStompBroker();
     port = broker.getPort();
-    onMessage.mockReset();
   });
 
   afterEach(() => {
@@ -62,7 +60,6 @@ describe("MockStompBroker", () => {
       const nonMatchingClient = getStompClient({
         port: customPathBroker.getPort(),
         topic,
-        onMessage,
         endpoint: "/some-other-endpoint"
       });
 
@@ -74,7 +71,6 @@ describe("MockStompBroker", () => {
       const matchingClient = getStompClient({
         port: customPathBroker.getPort(),
         topic,
-        onMessage,
         endpoint
       });
 
@@ -89,7 +85,6 @@ describe("MockStompBroker", () => {
       const client = getStompClient({
         port,
         topic,
-        onMessage,
         endpoint: "/websocket"
       });
 
@@ -105,7 +100,7 @@ describe("MockStompBroker", () => {
     let client: Client;
 
     beforeEach(() => {
-      client = getStompClient({ topic, port, onMessage });
+      client = getStompClient({ topic, port });
     });
 
     afterEach(() => {
@@ -176,31 +171,16 @@ describe("MockStompBroker", () => {
 
         expect(messageId).toBeDefined();
       });
-    });
 
-    describe("messageSent", () => {
-      it("rejects when a message with a specific messageId has not been sent", async () => {
-        const [sessionId] = await broker.newSessionsConnected();
+      it("results in async message with custom payload", async () => {
+        const onMessage = jest.fn();
+        const broker = new MockStompBroker();
+        const client = getStompClient({
+          port: broker.getPort(),
+          topic,
+          onMessage
+        });
 
-        await broker.subscribed(sessionId);
-
-        expectRejection(
-          broker.messageSent("some-invalid-id"),
-          "Message some-invalid-id was never sent"
-        );
-      });
-
-      it("resolves when a message with a specific messageId has been sent", async () => {
-        const [sessionId] = await broker.newSessionsConnected();
-
-        await broker.subscribed(sessionId);
-
-        const messageId = broker.scheduleMessage(topic, messagePayload);
-
-        await broker.messageSent(messageId);
-      });
-
-      it("message and payload should have been sent to subscribers", async () => {
         const [sessionId] = await broker.newSessionsConnected();
 
         await broker.subscribed(sessionId);
@@ -224,6 +204,71 @@ describe("MockStompBroker", () => {
             "content-type": "application/json;charset=UTF-8"
           }
         });
+
+        client.deactivate();
+        broker.kill();
+      });
+
+      it("allows customizing headers", async () => {
+        const onMessage = jest.fn();
+        const broker = new MockStompBroker();
+        const client = getStompClient({
+          port: broker.getPort(),
+          topic,
+          onMessage
+        });
+        const headers = {
+          "content-type": "text/plain",
+          "X-Custom-Header": "Hello, world",
+          mockMessageId: "This will be overriden by the broker"
+        };
+        const [sessionId] = await broker.newSessionsConnected();
+
+        await broker.subscribed(sessionId);
+
+        const messageId = broker.scheduleMessage(
+          topic,
+          messagePayload,
+          headers
+        );
+
+        await broker.messageSent(messageId);
+
+        const message = onMessage.mock.calls[0][0];
+
+        expect(message).toMatchObject({
+          headers: {
+            "content-type": "text/plain",
+            "X-Custom-Header": "Hello, world",
+            mockMessageId: messageId
+          }
+        });
+
+        client.deactivate();
+        broker.kill();
+      });
+    });
+
+    describe("messageSent", () => {
+      it("rejects when a message with a specific messageId has not been sent", async () => {
+        const [sessionId] = await broker.newSessionsConnected();
+
+        await broker.subscribed(sessionId);
+
+        expectRejection(
+          broker.messageSent("some-invalid-id"),
+          "Message some-invalid-id was never sent"
+        );
+      });
+
+      it("resolves when a message with a specific messageId has been sent", async () => {
+        const [sessionId] = await broker.newSessionsConnected();
+
+        await broker.subscribed(sessionId);
+
+        const messageId = broker.scheduleMessage(topic, messagePayload);
+
+        await broker.messageSent(messageId);
       });
     });
 
