@@ -49,9 +49,11 @@ class MockStompBroker {
   }
 
   private static getPort(): number {
-    const min = 8000; // inclusive
-    const max = 9001; // exclusive
+    const min = 8000; // inclusive TODO: make configurable
+    const max = 9001; // exclusive TODO: make configurable
     const port = this.getRandomInt(min, max);
+
+    // TODO: add try/catch on EADDRINUSE
 
     return this.PORTS_IN_USE.includes(port) ? this.getPort() : port;
   }
@@ -80,6 +82,7 @@ class MockStompBroker {
     this.httpServer.listen(this.port);
   }
 
+  // TODO: rename to newSession - this can never return more than one!
   public async newSessionsConnected(): Promise<string[]> {
     await waitUntil(this.thereAreNewSessions, "No new sessions established");
 
@@ -100,6 +103,19 @@ class MockStompBroker {
     }, `Session ${sessionId} never subscribed to a topic`);
   }
 
+  // TODO: rename to scheduleMessage
+  public sendMessageWithPayloadToTopic(topic: string, payload: {}): string {
+    const body = JSON.stringify(payload);
+    const mockMessageId = uuid();
+    this.stompServer.send(
+      `/${topic}`,
+      { "content-type": "application/json;charset=UTF-8", mockMessageId }, // TODO: make configurable
+      body
+    );
+
+    return mockMessageId;
+  }
+
   public messageSent(messageId: string) {
     return waitUntil(
       () => this.sentMessageIds.includes(messageId),
@@ -110,20 +126,9 @@ class MockStompBroker {
   public disconnected(sessionId: string) {
     return waitUntil(() => {
       const session = this.sessions[sessionId];
+
       return Boolean(session && session.hasDisconnected);
     }, `Session ${sessionId} never disconnected`);
-  }
-
-  public sendMessageWithPayloadToTopic(topic: string, payload: {}): string {
-    const body = JSON.stringify(payload);
-    const mockMessageId = uuid();
-    this.stompServer.send(
-      `/topics/${topic}`, // TODO: make configurable
-      { "content-type": "application/json;charset=UTF-8", mockMessageId }, // TODO: make configurable
-      body
-    );
-
-    return mockMessageId;
   }
 
   public kill() {
