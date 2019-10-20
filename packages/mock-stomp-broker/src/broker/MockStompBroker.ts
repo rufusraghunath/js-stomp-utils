@@ -2,6 +2,7 @@ import uuid from "uuid/v4";
 import http, { Server } from "http";
 import StompServer from "stomp-broker-js";
 import waitUntil from "../util/waitUntil";
+import { Config } from ".";
 
 type CallNextMiddleWare = () => boolean;
 type MiddlewareStrategy = [
@@ -35,12 +36,6 @@ interface Sessions {
   [sessionId: string]: Session;
 }
 
-interface OptionalConfig {
-  port?: number;
-  portRange?: [number, number];
-  endpoint?: string;
-}
-
 class MockStompBroker {
   private static PORTS_IN_USE: number[] = [];
   private static BASE_SESSION = {
@@ -69,11 +64,7 @@ class MockStompBroker {
   private queriedSessionIds: string[] = [];
   private sessions: Sessions = {};
 
-  constructor({
-    port,
-    portRange,
-    endpoint = "/websocket"
-  }: OptionalConfig = {}) {
+  constructor({ port, portRange, endpoint = "/websocket" }: Config = {}) {
     this.thereAreNewSessions = this.thereAreNewSessions.bind(this);
     this.registerMiddlewares = this.registerMiddlewares.bind(this);
     this.setMiddleware = this.setMiddleware.bind(this);

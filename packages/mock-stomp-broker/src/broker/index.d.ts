@@ -4,14 +4,22 @@
 
 export = MockStompBroker;
 
-declare class MockStompBroker {
-  constructor(port?: number);
+declare namespace MockStompBroker {
+  interface Config {
+    port?: number;
+    portRange?: [number, number];
+    endpoint?: string;
+  }
 
-  getPort(): number;
-  newSessionsConnected(): Promise<string[]>;
-  subscribed(sessionId: string): Promise<void>;
-  sendMessageWithPayloadToTopic(topic: string, payload: any): string;
-  messageSent(messageId: string): Promise<void>;
-  disconnected(sessionId: string): Promise<void>;
-  kill(): void;
+  class MockStompBroker {
+    constructor(config?: Config);
+
+    getPort(): number;
+    newSessionsConnected(): Promise<string[]>;
+    subscribed(sessionId: string): Promise<void>;
+    sendMessageWithPayloadToTopic(topic: string, payload: any): string;
+    messageSent(messageId: string): Promise<void>;
+    disconnected(sessionId: string): Promise<void>;
+    kill(): void;
+  }
 }
