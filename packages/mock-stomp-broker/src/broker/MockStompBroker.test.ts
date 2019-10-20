@@ -1,6 +1,7 @@
 import MockStompBroker from "./MockStompBroker";
-import { Client, Message } from "@stomp/stompjs";
+import { Client } from "@stomp/stompjs";
 import { TextEncoder, TextDecoder } from "text-encoding";
+import getStompClient from "../util/getStompClient";
 
 interface Global extends NodeJS.Global {
   TextEncoder: any;
@@ -13,28 +14,6 @@ global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 
 describe("MockStompBroker", () => {
-  interface ClientArgs {
-    port: number;
-    topic?: string;
-    onMessage?: (message: Message) => void;
-  }
-
-  const getClient = ({ port, topic, onMessage = jest.fn() }: ClientArgs) => {
-    const client = new Client({
-      brokerURL: `ws://localhost:${port}/websocket`
-    });
-
-    if (topic) {
-      client.onConnect = () => {
-        client.subscribe(topic, onMessage);
-      };
-    }
-
-    client.activate();
-
-    return client;
-  };
-
   let broker: MockStompBroker;
   let port: number;
 
@@ -94,7 +73,7 @@ describe("MockStompBroker", () => {
     let client: Client;
 
     beforeEach(() => {
-      client = getClient({ topic, port, onMessage });
+      client = getStompClient({ topic, port, onMessage });
       onMessage.mockReset();
     });
 
@@ -122,7 +101,7 @@ describe("MockStompBroker", () => {
 
       it("does not return sessionIds that have already been queried", async () => {
         const [firstSessionId] = await broker.newSessionsConnected();
-        const secondClient = getClient({ topic, port });
+        const secondClient = getStompClient({ topic, port });
         const sessionIds = await broker.newSessionsConnected();
 
         expect(sessionIds).toHaveLength(1);
@@ -135,7 +114,7 @@ describe("MockStompBroker", () => {
     describe("subscribed", () => {
       it("rejects when no subscription is made for a sessionId", async () => {
         const unsubscribedBroker = new MockStompBroker();
-        const unsubscribedClient = getClient({
+        const unsubscribedClient = getStompClient({
           port: unsubscribedBroker.getPort()
         });
         const [sessionId] = await unsubscribedBroker.newSessionsConnected();
