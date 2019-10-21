@@ -2,7 +2,6 @@ import uuid from "uuid/v4";
 import http, { Server } from "http";
 import StompServer from "stomp-broker-js";
 import waitUntil from "../util/waitUntil";
-import { Config } from ".";
 
 type CallNextMiddleWare = () => boolean;
 type MiddlewareStrategy = [
@@ -34,6 +33,12 @@ interface Session {
 
 interface Sessions {
   [sessionId: string]: Session;
+}
+
+interface Config {
+  port?: number;
+  portRange?: [number, number];
+  endpoint?: string;
 }
 
 class MockStompBroker {
