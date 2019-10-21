@@ -2,9 +2,16 @@
 
 A Node-based mock STOMP message broker with hooks for easy testing of your STOMP clients. TypeScript support via [src/broker/index.d.ts](src/broker/index.d.ts).
 
+## Installing
+
+`npm install --save-dev mock-stomp-broker`
+
 ## Usage example
 
 ```jsx
+import MockStompBroker from "mock-stomp-broker";
+import MyUpdateableTable from "./MyUpdateableTable";
+
 describe("MyUpdateableTable", () => {
   it("should add rows to the table when row data is pushed via STOMP", async () => {
     const broker = new MockStompBroker();
