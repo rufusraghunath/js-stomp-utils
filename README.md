@@ -1,2 +1,7 @@
-# js-stomp-utils
-Monorepo for JavaScript STOMP utils
+# JS STOMP Utils
+
+Monorepo for JavaScript STOMP utils.
+
+## [MockStompBroker](packages/mock-stomp-broker/README.md)
+
+A Node-based mock STOMP message broker with hooks for easy testing of your STOMP clients. TypeScript support via [src/broker/index.d.ts](src/broker/index.d.ts).
