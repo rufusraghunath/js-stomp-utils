@@ -1,6 +1,6 @@
-import MockStompBroker from "./MockStompBroker";
 import { Client } from "@stomp/stompjs";
 import { TextEncoder, TextDecoder } from "text-encoding";
+import MockStompBroker from "./MockStompBroker";
 import getStompClient from "../util/getStompClient";
 
 interface Global extends NodeJS.Global {

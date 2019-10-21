@@ -17,6 +17,9 @@ module.exports = {
     extensions: [".ts", ".js", ".json", ".node"]
   },
   output: {
+    library: "MockStompBroker",
+    libraryTarget: "umd",
+    libraryExport: "default",
     filename: "bundle.js",
     path: path.resolve(__dirname, "dist")
   }

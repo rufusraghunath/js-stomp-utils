@@ -1,23 +1,35 @@
-// Type definitions for MockStompBroker
-// Project: https://github.com/rufusraghunath/mock-stomp-broker
-// Definitions by: Rufus Raghunath <https://github.com/rufusraghunath>
+declare module "mock-stomp-broker" {
+  interface Config {
+    port?: number;
+    portRange?: [number, number];
+    endpoint?: string;
+  }
 
-export = MockStompBroker;
+  class MockStompBroker {
+    private static PORTS_IN_USE;
+    private static BASE_SESSION;
+    private static getRandomInt;
+    private static getPort;
+    private readonly port;
+    private readonly httpServer;
+    private readonly stompServer;
+    private readonly sentMessageIds;
+    private queriedSessionIds;
+    private sessions;
+    private thereAreNewSessions;
+    private setMiddleware;
+    private registerMiddlewares;
 
-interface Config {
-  port?: number;
-  portRange?: [number, number];
-  endpoint?: string;
-}
+    constructor({ port, portRange, endpoint }?: Config);
 
-declare class MockStompBroker {
-  constructor(config?: Config);
+    public newSessionsConnected(): Promise<string[]>;
+    public subscribed(sessionId: string): Promise<void>;
+    public scheduleMessage(topic: string, payload: any, headers?: {}): string;
+    public messageSent(messageId: string): Promise<void>;
+    public disconnected(sessionId: string): Promise<void>;
+    public kill(): void;
+    public getPort(): number;
+  }
 
-  getPort(): number;
-  newSessionsConnected(): Promise<string[]>;
-  subscribed(sessionId: string): Promise<void>;
-  scheduleMessage(topic: string, payload: any, headers?: {}): string;
-  messageSent(messageId: string): Promise<void>;
-  disconnected(sessionId: string): Promise<void>;
-  kill(): void;
+  export default MockStompBroker;
 }
