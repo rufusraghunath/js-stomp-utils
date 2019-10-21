@@ -46,12 +46,12 @@ describe("MockStompBroker", () => {
       port = broker.getPort();
 
       expect(port).toBeLessThan(5010);
-      expect(port).toBeGreaterThan(5000);
+      expect(port).toBeGreaterThanOrEqual(5000);
     });
 
     it("falls back to a random port between 8000 and 9000", () => {
       expect(port).toBeLessThan(9000);
-      expect(port).toBeGreaterThan(8000);
+      expect(port).toBeGreaterThanOrEqual(8000);
     });
 
     it("can be configured to take a custom websocket endpoint", async () => {
