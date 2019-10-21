@@ -1,6 +1,6 @@
 {
   "name": "mock-stomp-broker",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A mock STOMP broker for Node, to be used for testing",
   "author": "Rufus Raghunath",
   "license": "MIT",
