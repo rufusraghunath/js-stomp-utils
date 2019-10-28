@@ -10,7 +10,7 @@ A simple STOMP message client for React. Easily testable with `MockStompBroker`!
 
 ## [MockStompBroker](https://www.npmjs.com/package/mock-stomp-broker)
 
-A Node-based mock STOMP message broker with hooks for easy testing of your STOMP clients.
+A Node-based mock STOMP message broker with hooks for easy testing. Works well with `ReactStompClient`, but is client-agnostic.
 
 ## Setup
 
