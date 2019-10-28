@@ -1,6 +1,6 @@
 import { mount } from "enzyme";
 import React from "react";
-import MockStompBroker from "../../../mock-stomp-broker/src/broker/MockStompBroker";
+import MockStompBroker from "mock-stomp-broker";
 import StompClient from "./StompClient";
 
 describe("StompClient", () => {

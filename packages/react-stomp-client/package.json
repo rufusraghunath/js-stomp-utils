@@ -43,6 +43,7 @@
     "jest": "^24.9.0",
     "jest-cli": "^24.9.0",
     "lint-staged": "^9.4.2",
+    "mock-stomp-broker": "^1.1.2",
     "prettier": "^1.18.2",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
