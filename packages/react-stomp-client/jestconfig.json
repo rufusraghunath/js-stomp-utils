@@ -3,5 +3,13 @@
   "testRegex": "test\\.(tsx|ts)?$",
   "moduleFileExtensions": ["tsx", "ts", "js", "json", "node"],
   "collectCoverage": true,
-  "setupFilesAfterEnv": ["<rootDir>src/setupTests.ts"]
+  "setupFilesAfterEnv": ["<rootDir>src/setupTests.ts"],
+  "coverageThreshold": {
+    "global": {
+      "branches": 85,
+      "functions": 90,
+      "lines": 90,
+      "statements": 90
+    }
+  }
 }

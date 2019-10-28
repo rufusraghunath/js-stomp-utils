@@ -3,7 +3,6 @@ import React from "react";
 import MockStompBroker from "../../../mock-stomp-broker/src/broker/MockStompBroker";
 import StompClient from "./StompClient";
 
-// TODO: add test coverage gate
 describe("StompClient", () => {
   const topic = "my-topic";
   const headers = {
