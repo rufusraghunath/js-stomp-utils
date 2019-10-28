@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import { Client, Message } from "@stomp/stompjs";
 import { Component, ReactNode } from "react";
 import { isEqual } from "lodash";
@@ -11,6 +9,9 @@ interface Props {
   children?: ReactNode;
   topic?: string;
   debugMode?: boolean;
+  reconnectDelay?: number;
+  heartbeatIncoming?: number;
+  heartbeatOutgoing?: number;
   onMessage?: (message: Message) => void;
 }
 
@@ -82,13 +83,19 @@ export default class StompClient extends Component<Props, State> {
   }
 
   private getNewClient(): Client {
-    const { endpoint, debugMode } = this.props;
+    const {
+      endpoint,
+      debugMode,
+      reconnectDelay,
+      heartbeatIncoming,
+      heartbeatOutgoing
+    } = this.props;
     return new Client({
       brokerURL: endpoint,
       debug: debugMode ? console.debug : noOp,
-      reconnectDelay: StompClient.RECONNECT_DELAY, // TODO: make configurable
-      heartbeatIncoming: StompClient.HEARBEAT_FREQUENCY, // TODO: make configurable
-      heartbeatOutgoing: StompClient.HEARBEAT_FREQUENCY // TODO: make configurable
+      reconnectDelay: reconnectDelay || StompClient.RECONNECT_DELAY,
+      heartbeatIncoming: heartbeatIncoming || StompClient.HEARBEAT_FREQUENCY,
+      heartbeatOutgoing: heartbeatOutgoing || StompClient.HEARBEAT_FREQUENCY
     });
   }
 }

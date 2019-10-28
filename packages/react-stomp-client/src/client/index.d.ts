@@ -7,6 +7,9 @@ declare module "react-stomp-client" {
     children?: ReactNode;
     topic?: string;
     debugMode?: boolean;
+    reconnectDelay?: number;
+    heartbeatIncoming?: number;
+    heartbeatOutgoing?: number;
     onMessage?: (message: Message) => void;
   }
 
