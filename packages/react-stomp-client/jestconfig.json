@@ -1,14 +1,7 @@
 {
   "preset": "ts-jest",
-  "testRegex": "test\\.ts?$",
+  "testRegex": "test\\.(tsx|ts)?$",
   "moduleFileExtensions": ["tsx", "ts", "js", "json", "node"],
   "collectCoverage": true,
-  "coverageThreshold": {
-    "global": {
-      "branches": 90,
-      "functions": 90,
-      "lines": 90,
-      "statements": 90
-    }
-  }
+  "setupFilesAfterEnv": ["<rootDir>src/setupTests.ts"]
 }
