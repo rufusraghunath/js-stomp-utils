@@ -2,8 +2,18 @@
 
 # JS STOMP Utils
 
-Monorepo for JavaScript STOMP utils.
+Monorepo for JavaScript STOMP utils. Full TypeScript support.
 
-## [MockStompBroker](packages/mock-stomp-broker/README.md)
+## [ReactStompClient](https://www.npmjs.com/package/react-stomp-client)
 
-A Node-based mock STOMP message broker with hooks for easy testing of your STOMP clients. TypeScript support via [src/broker/index.d.ts](src/broker/index.d.ts).
+A simple STOMP message client for React. Easily testable with `MockStompBroker`!
+
+## [MockStompBroker](https://www.npmjs.com/package/mock-stomp-broker)
+
+A Node-based mock STOMP message broker with hooks for easy testing of your STOMP clients.
+
+## Setup
+
+1. Run `npm install` in the repo root
+2. Run `lerna bootstrap` to symlink the packages and install dependencies
+3. Done!
