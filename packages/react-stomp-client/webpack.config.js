@@ -3,7 +3,7 @@ const path = require("path");
 module.exports = {
   entry: "./src/index.ts",
   target: "node",
-  externals: ["react"], // TODO: should include lodash.isempty?
+  externals: ["react"],
   module: {
     rules: [
       {
@@ -18,7 +18,7 @@ module.exports = {
   },
   output: {
     library: "StompClient",
-    libraryTarget: "umd", // TODO: this should be browser only?
+    libraryTarget: "umd",
     libraryExport: "default",
     filename: "bundle.js",
     path: path.resolve(__dirname, "dist")

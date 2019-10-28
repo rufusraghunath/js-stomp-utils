@@ -1,6 +1,6 @@
 import { Client, Message } from "@stomp/stompjs";
 import { Component, ReactNode } from "react";
-import { isEqual } from "lodash";
+import isEqual from "lodash.isequal";
 
 const noOp = () => {};
 
