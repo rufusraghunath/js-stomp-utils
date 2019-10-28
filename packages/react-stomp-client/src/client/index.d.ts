@@ -3,11 +3,11 @@ declare module "react-stomp-client" {
   import { Component, ReactNode } from "react";
 
   interface Props {
-    children: ReactNode;
+    endpoint: string;
+    children?: ReactNode;
     topic?: string;
-    onMessage?: (message: Message) => void;
-    port?: number;
     debugMode?: boolean;
+    onMessage?: (message: Message) => void;
   }
 
   interface State {
@@ -20,14 +20,15 @@ declare module "react-stomp-client" {
     };
     private static readonly RECONNECT_DELAY;
     private static readonly HEARBEAT_FREQUENCY;
+    private activateAndSubscribe;
+    private handleStompMessage;
+    private getNewClient;
+
     constructor(props: Props);
+
     componentDidMount(): void;
     componentDidUpdate(prevProps: Props): void;
     componentWillUnmount(): void;
     render(): ReactNode;
-    private activateAndSubscribe;
-    private handleStompMessage;
-    private getBrokerUrl;
-    private getNewClient;
   }
 }

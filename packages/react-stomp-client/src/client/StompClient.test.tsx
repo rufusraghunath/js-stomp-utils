@@ -11,10 +11,13 @@ describe("StompClient", () => {
   };
   const message = { data: { id: "my-id", name: "my-name" } };
   const onMessageMock = jest.fn();
+  const getEndpoint = (port: number) => `ws://localhost:${port}/websocket`;
   let server: MockStompBroker;
+  let endpoint: string;
 
   beforeEach(() => {
     server = new MockStompBroker();
+    endpoint = getEndpoint(server.getPort());
     onMessageMock.mockReset();
   });
 
@@ -24,7 +27,7 @@ describe("StompClient", () => {
 
   it("should render its children", () => {
     const wrapper = mount(
-      <StompClient port={server.getPort()} topic={topic} onMessage={() => {}}>
+      <StompClient endpoint={endpoint} topic={topic} onMessage={() => {}}>
         <div>Hello, STOMP</div>
       </StompClient>
     );
@@ -36,12 +39,9 @@ describe("StompClient", () => {
     const port = server.getPort();
 
     server.kill();
-    // TODO: may have to add a test to prove that the client reconnects when an existing connection is severed
-    // (as opposed to failing to establishing a connection in the first place).
-    // Seeing some behavior that indicates we may have to handroll such reconnection logic.
 
     mount(
-      <StompClient port={port} topic={topic} onMessage={() => {}}>
+      <StompClient endpoint={endpoint} topic={topic} onMessage={() => {}}>
         <div>Hello, STOMP</div>
       </StompClient>
     );
@@ -53,7 +53,7 @@ describe("StompClient", () => {
 
   it("should not try to subscribe when no topic is provided on first mount", async done => {
     mount(
-      <StompClient port={server.getPort()}>
+      <StompClient endpoint={endpoint}>
         <div>Hello, STOMP</div>
       </StompClient>
     );
@@ -68,11 +68,7 @@ describe("StompClient", () => {
 
   it("should not try to create new subscription when topic is removed", async done => {
     const wrapper = mount(
-      <StompClient
-        port={server.getPort()}
-        topic={topic}
-        onMessage={onMessageMock}
-      >
+      <StompClient endpoint={endpoint} topic={topic} onMessage={onMessageMock}>
         <div>Hello, STOMP</div>
       </StompClient>
     );
@@ -95,11 +91,7 @@ describe("StompClient", () => {
 
   it("should call onMessage fn when message received", async () => {
     mount(
-      <StompClient
-        port={server.getPort()}
-        topic={topic}
-        onMessage={onMessageMock}
-      >
+      <StompClient endpoint={endpoint} topic={topic} onMessage={onMessageMock}>
         <div>Hello, STOMP</div>
       </StompClient>
     );
@@ -122,11 +114,7 @@ describe("StompClient", () => {
 
   it("should sever STOMP connection when component is unmounted", async () => {
     const wrapper = mount(
-      <StompClient
-        port={server.getPort()}
-        topic={topic}
-        onMessage={onMessageMock}
-      >
+      <StompClient endpoint={endpoint} topic={topic} onMessage={onMessageMock}>
         <div>Hello, STOMP</div>
       </StompClient>
     );
@@ -148,11 +136,7 @@ describe("StompClient", () => {
 
   it("should kill old STOMP connection and open new one when topic changes", async () => {
     const wrapper = mount(
-      <StompClient
-        port={server.getPort()}
-        topic={topic}
-        onMessage={onMessageMock}
-      >
+      <StompClient endpoint={endpoint} topic={topic} onMessage={onMessageMock}>
         <div>Hello, STOMP</div>
       </StompClient>
     );

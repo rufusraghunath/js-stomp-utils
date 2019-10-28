@@ -7,11 +7,11 @@ import { isEqual } from "lodash";
 const noOp = () => {};
 
 interface Props {
-  children: ReactNode;
+  endpoint: string;
+  children?: ReactNode;
   topic?: string;
-  onMessage?: (message: Message) => void;
-  port?: number;
   debugMode?: boolean;
+  onMessage?: (message: Message) => void;
 }
 
 interface State {
@@ -81,21 +81,11 @@ export default class StompClient extends Component<Props, State> {
     }
   }
 
-  private getBrokerUrl(): string {
-    // TODO: pass this whole thing as a prop
-    const { port } = this.props;
-    const hostname = "localhost";
-    const protocol =
-      process.env.NODE_ENV === "development" || hostname === "localhost"
-        ? "ws"
-        : "wss";
-    return `${protocol}://${hostname}:${port}/websocket`;
-  }
-
   private getNewClient(): Client {
+    const { endpoint, debugMode } = this.props;
     return new Client({
-      brokerURL: this.getBrokerUrl(),
-      debug: this.props.debugMode ? console.debug : noOp,
+      brokerURL: endpoint,
+      debug: debugMode ? console.debug : noOp,
       reconnectDelay: StompClient.RECONNECT_DELAY, // TODO: make configurable
       heartbeatIncoming: StompClient.HEARBEAT_FREQUENCY, // TODO: make configurable
       heartbeatOutgoing: StompClient.HEARBEAT_FREQUENCY // TODO: make configurable
