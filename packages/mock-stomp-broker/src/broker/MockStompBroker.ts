@@ -1,7 +1,18 @@
 import uuid from "uuid/v4";
 import http, { Server } from "http";
+import { TextEncoder, TextDecoder } from "text-encoding";
 import StompServer from "stomp-broker-js";
 import waitUntil from "../util/waitUntil";
+
+interface Global extends NodeJS.Global {
+  TextEncoder: any;
+  TextDecoder: any;
+}
+
+declare var global: Global;
+
+global.TextEncoder = global.TextEncoder || TextEncoder;
+global.TextDecoder = global.TextDecoder || TextDecoder;
 
 type CallNextMiddleWare = () => boolean;
 type MiddlewareStrategy = [

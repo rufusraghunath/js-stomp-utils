@@ -1,17 +1,6 @@
 import { Client } from "@stomp/stompjs";
-import { TextEncoder, TextDecoder } from "text-encoding";
 import MockStompBroker from "./MockStompBroker";
 import getStompClient from "../util/getStompClient";
-
-interface Global extends NodeJS.Global {
-  TextEncoder: any;
-  TextDecoder: any;
-}
-
-declare var global: Global;
-
-global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder;
 
 describe("MockStompBroker", () => {
   const topic = "my-topic";
