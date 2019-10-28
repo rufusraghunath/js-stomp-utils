@@ -1,6 +1,6 @@
 # [MockStompBroker](https://www.npmjs.com/package/mock-stomp-broker)
 
-A Node-based mock STOMP message broker with hooks for easy testing of your STOMP clients. TypeScript support via [src/broker/index.d.ts](src/broker/index.d.ts).
+A Node-based mock STOMP message broker with hooks for easy testing of your STOMP clients. Supports TypeScript.
 
 ## Installing
 
