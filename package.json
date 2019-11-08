@@ -1,5 +1,5 @@
 {
-  "name": "stomp-for-js",
+  "name": "js-stomp-utils",
   "version": "0.0.0",
   "description": "Monorepo for JavaScript STOMP utils",
   "scripts": {
