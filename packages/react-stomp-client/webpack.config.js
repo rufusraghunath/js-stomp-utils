@@ -4,6 +4,7 @@ module.exports = {
   entry: "./src/index.ts",
   target: "node",
   externals: ["react"],
+  devtool: "source-map",
   module: {
     rules: [
       {
